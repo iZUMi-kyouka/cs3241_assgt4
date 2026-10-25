@@ -19,8 +19,8 @@ jobs:
         platform: [x64, x86]
         config: [Debug, Release]
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v7.0.1
+      - uses: actions/setup-python@v7.1.0
         with:
           python-version: '3.12'
       - name: Install GNU Make and pinned formatter
@@ -38,7 +38,7 @@ jobs:
           python scripts/smoke-test.py "build/$platform/${{ matrix.config }}/CS3241 Assignment 4 Bezier.exe"
       - name: Save executable, matching DLL, and full MSBuild diagnostics
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7.0.2
         with:
           name: windows-${{ matrix.platform }}-${{ matrix.config }}
           path: |
@@ -60,8 +60,8 @@ jobs:
           - { runner: macos-15, arch: arm64, config: Debug }
           - { runner: macos-15, arch: arm64, config: Release }
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v7.0.1
+      - uses: actions/setup-python@v7.1.0
         with:
           python-version: '3.12'
       - name: Install pinned formatter
@@ -70,7 +70,7 @@ jobs:
         run: test "$(uname -m)" = '${{ matrix.arch }}'
       - name: Check formatting, build with zero warnings, and verify GLUT startup
         run: make smoke CONFIG=${{ matrix.config }} CXX=clang++
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7.0.2
         with:
           name: macos-${{ matrix.arch }}-${{ matrix.config }}
           path: build/${{ matrix.arch }}/${{ matrix.config }}/cs3241_assgt4
@@ -83,8 +83,8 @@ jobs:
       matrix:
         config: [Debug, Release]
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v7.0.1
+      - uses: actions/setup-python@v7.1.0
         with:
           python-version: '3.12'
       - name: Install build, formatting, and display dependencies
