@@ -5,8 +5,8 @@ Bezier curves. Windows grading compatibility is the first priority. Support nati
 Windows x64/x86, macOS Intel, macOS Apple Silicon, and Linux without compiler or
 linker warnings.
 
-Read `README.md` for setup, `CI_SETUP.md` for push checks, and
-`cs3241_assgt4.pdf` before changing assignment behavior. The starter's drawing tasks
+Read `README.md` for setup, `docs/CI_SETUP.md` for push checks, and
+`docs/cs3241_assgt4.pdf` before changing assignment behavior. The starter's drawing tasks
 are not all implemented; a successful build or startup check does not establish
 assignment correctness.
 
@@ -152,7 +152,7 @@ For a new clone, install GitHub CLI, authenticate with `gh auth login`, and run
 `git push` submits the exact outgoing commits to temporary `ci-validation/*`
 branches, waits for all jobs, removes those branches, and then completes the push.
 `main` requires all ten checks and disallows force pushes. Do not bypass the hook
-or protection to publish unchecked changes. See `CI_SETUP.md` for details.
+or protection to publish unchecked changes. See `docs/CI_SETUP.md` for details.
 
 ## Assignment data
 

@@ -85,6 +85,6 @@ For a headless startup check, install `xvfb xauth` and run `xvfb-run -a make smo
 
 ## GitHub checks and pushing
 
-See [CI_SETUP.md](CI_SETUP.md) for the ten build/startup jobs, required checks on `main`, and the pre-push hook. Enable the hook in every new clone with `make install-hooks`.
+See [CI_SETUP.md](docs/CI_SETUP.md) for the ten build/startup jobs, required checks on `main`, and the pre-push hook. Enable the hook in every new clone with `make install-hooks`.
 
 Build checks verify compilation, linking, and five seconds of GLUT startup. They do not assess the unfinished assignment's curve behavior or visual correctness. Keep your eventual drawing data (`savefile.txt`) in version control for submission.

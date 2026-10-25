@@ -25,6 +25,13 @@
 #define NLINESEGMENT 32
 #define NOBJECTONCURVE 8
 
+// The PDF specifies color names, not RGB/hex values.
+enum : unsigned int {
+    COLOR_CONTROL_LINE = 0x00FF00,              // green
+    COLOR_C1_ORIGINAL_CONTROL_POINT = 0xC0C0C0, // dark grey
+    COLOR_C1_ADJUSTED_CONTROL_POINT = 0xFF0000  // red
+};
+
 using namespace std;
 
 // Global variables that you can use
@@ -37,14 +44,19 @@ int nPt = 0;
 Point ptList[MAXPTNO];
 
 // Display options
-bool displayControlPoints = true;
-bool displayControlLines = true;
-bool displayTangentVectors = false;
-bool displayObjects = false;
-bool C1Continuity = false;
+bool isDisplayingControlPoints = true;
+bool isDisplayingControlLines = true;
+bool isDisplayingTangentVectors = false;
+bool isDisplayingObjects = false;
+bool isC1ContinuityMode = false;
+
+void setColor(unsigned int rgb) {
+    glColor3ub(static_cast<GLubyte>((rgb >> 16) & 0xFF), static_cast<GLubyte>((rgb >> 8) & 0xFF),
+               static_cast<GLubyte>(rgb & 0xFF));
+}
 
 void drawRightArrow() {
-    glColor3f(0, 1, 0);
+    setColor(COLOR_CONTROL_LINE);
     glBegin(GL_LINE_STRIP);
     glVertex2f(0, 0);
     glVertex2f(100, 0);
@@ -57,7 +69,7 @@ void drawRightArrow() {
 void display(void) {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glPushMatrix();
-    if (displayControlPoints) {
+    if (isDisplayingControlPoints) {
 
         glPointSize(5);
         glBegin(GL_POINTS);
@@ -69,8 +81,8 @@ void display(void) {
         glPointSize(1);
     }
 
-    if (displayControlLines) {
-        glColor3f(0, 1, 0);
+    if (isDisplayingControlLines) {
+        setColor(COLOR_CONTROL_LINE);
     }
 
     glPopMatrix();
@@ -134,27 +146,27 @@ void keyboard(unsigned char key, int /*x*/, int /*y*/) {
 
         case 'T':
         case 't':
-            displayTangentVectors = !displayTangentVectors;
+            isDisplayingTangentVectors = !isDisplayingTangentVectors;
             break;
 
         case 'o':
         case 'O':
-            displayObjects = !displayObjects;
+            isDisplayingObjects = !isDisplayingObjects;
             break;
 
         case 'p':
         case 'P':
-            displayControlPoints = !displayControlPoints;
+            isDisplayingControlPoints = !isDisplayingControlPoints;
             break;
 
         case 'L':
         case 'l':
-            displayControlLines = !displayControlLines;
+            isDisplayingControlLines = !isDisplayingControlLines;
             break;
 
         case 'C':
         case 'c':
-            C1Continuity = !C1Continuity;
+            isC1ContinuityMode = !isC1ContinuityMode;
             break;
 
         case 'e':

@@ -1,6 +1,6 @@
 # Cross-platform push checks
 
-The workflow in `.github/workflows/cross-platform-build.yml` runs on `main`, temporary `ci-validation/*` branches, pull requests, and manual dispatch. Its ten required jobs are:
+The workflow in `../.github/workflows/cross-platform-build.yml` runs on `main`, temporary `ci-validation/*` branches, pull requests, and manual dispatch. Its ten required jobs are:
 
 - `Windows x64 Debug`
 - `Windows x64 Release`
