@@ -1,0 +1,17 @@
+/build/
+/.vs/
+/.idea/
+*.vcxproj.user
+*.suo
+*.user
+*.VC.db
+*.VC.VC.opendb
+*.obj
+*.pdb
+*.ilk
+*.idb
+*.tlog/
+__pycache__/
+.DS_Store
+desktop.ini
+/.venv/

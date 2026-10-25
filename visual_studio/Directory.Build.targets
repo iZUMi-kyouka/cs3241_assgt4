@@ -1,0 +1,20 @@
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <!-- Complete the bundled dependency paths for all four original configurations. -->
+  <PropertyGroup>
+    <FreeGlutLibraryDir Condition="'$(Platform)' == 'x64'">$(MSBuildThisFileDirectory)lib</FreeGlutLibraryDir>
+    <FreeGlutRuntime Condition="'$(Platform)' == 'x64'">$(MSBuildThisFileDirectory)freeglut.dll</FreeGlutRuntime>
+    <FreeGlutLibraryDir Condition="'$(Platform)' == 'Win32'">$(MSBuildThisFileDirectory)lib\Win32</FreeGlutLibraryDir>
+    <FreeGlutRuntime Condition="'$(Platform)' == 'Win32'">$(MSBuildThisFileDirectory)bin\Win32\freeglut.dll</FreeGlutRuntime>
+  </PropertyGroup>
+  <ItemDefinitionGroup>
+    <ClCompile>
+      <AdditionalIncludeDirectories>$(MSBuildThisFileDirectory)include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <AdditionalLibraryDirectories>$(FreeGlutLibraryDir);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Link>
+  </ItemDefinitionGroup>
+  <Target Name="CopyFreeGlutRuntime" AfterTargets="Build">
+    <Copy SourceFiles="$(FreeGlutRuntime)" DestinationFolder="$(OutDir)" SkipUnchangedFiles="true" />
+  </Target>
+</Project>

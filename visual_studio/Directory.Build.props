@@ -1,0 +1,7 @@
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <!-- Output locations only; compiler/toolset settings remain in the starter project. -->
+  <PropertyGroup>
+    <OutDir>$(MSBuildThisFileDirectory)..\build\$(Platform)\$(Configuration)\</OutDir>
+    <IntDir>$(MSBuildThisFileDirectory)..\build\$(Platform)\$(Configuration)\obj\</IntDir>
+  </PropertyGroup>
+</Project>

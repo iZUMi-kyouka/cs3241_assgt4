@@ -1,0 +1,96 @@
+name: Cross-platform build
+
+on:
+  push:
+    branches: [main, 'ci-validation/**']
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  windows:
+    name: Windows ${{ matrix.platform }} ${{ matrix.config }}
+    runs-on: windows-2022
+    strategy:
+      fail-fast: false
+      matrix:
+        platform: [x64, x86]
+        config: [Debug, Release]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install GNU Make and pinned formatter
+        shell: pwsh
+        run: |
+          choco install make --yes --no-progress
+          python -m pip install -r requirements-dev.txt
+      - name: Check formatting and build the professor's solution with zero warnings
+        shell: pwsh
+        run: make check CONFIG=${{ matrix.config }} PLATFORM=${{ matrix.platform }}
+      - name: Verify GLUT startup
+        shell: pwsh
+        run: |
+          $platform = if ('${{ matrix.platform }}' -eq 'x86') { 'Win32' } else { 'x64' }
+          python scripts/smoke-test.py "build/$platform/${{ matrix.config }}/CS3241 Assignment 4 Bezier.exe"
+      - name: Save executable, matching DLL, and full MSBuild diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: windows-${{ matrix.platform }}-${{ matrix.config }}
+          path: |
+            build/**/*.exe
+            build/**/*.dll
+            build/**/*.log
+            build/**/*.binlog
+          if-no-files-found: warn
+
+  macos:
+    name: macOS ${{ matrix.arch }} ${{ matrix.config }}
+    runs-on: ${{ matrix.runner }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { runner: macos-15-intel, arch: x86_64, config: Debug }
+          - { runner: macos-15-intel, arch: x86_64, config: Release }
+          - { runner: macos-15, arch: arm64, config: Debug }
+          - { runner: macos-15, arch: arm64, config: Release }
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install pinned formatter
+        run: python -m pip install -r requirements-dev.txt
+      - name: Verify native runner architecture
+        run: test "$(uname -m)" = '${{ matrix.arch }}'
+      - name: Check formatting, build with zero warnings, and verify GLUT startup
+        run: make smoke CONFIG=${{ matrix.config }} CXX=clang++
+      - uses: actions/upload-artifact@v4
+        with:
+          name: macos-${{ matrix.arch }}-${{ matrix.config }}
+          path: build/${{ matrix.arch }}/${{ matrix.config }}/cs3241_assgt4
+
+  linux:
+    name: Linux ${{ matrix.config }}
+    runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      matrix:
+        config: [Debug, Release]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install build, formatting, and display dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y g++ make freeglut3-dev libglu1-mesa-dev xvfb xauth
+          python -m pip install -r requirements-dev.txt
+      - name: Check formatting, build with zero warnings, and verify GLUT startup
+        run: xvfb-run -a make smoke CONFIG=${{ matrix.config }}

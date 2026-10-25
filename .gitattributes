@@ -1,0 +1,17 @@
+* text=auto
+*.cpp text eol=lf
+*.py text eol=lf
+*.ps1 text eol=lf
+*.sh text eol=lf
+*.yml text eol=lf
+*.md text eol=lf
+Makefile text eol=lf
+.clang-format text eol=lf
+.githooks/* text eol=lf
+# Preserve the professor's files byte for byte, including their CRLF endings.
+*.sln -text
+*.vcxproj -text
+*.vcxproj.filters -text
+*.dll binary
+*.lib binary
+*.exe binary
