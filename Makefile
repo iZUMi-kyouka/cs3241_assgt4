@@ -50,10 +50,10 @@ build: format verify-project
 	$(MAKE) --no-print-directory _build
 
 format:
-	$(CLANG_FORMAT) -i main.cpp
+	$(PYTHON) scripts/format-source.py --formatter "$(CLANG_FORMAT)"
 
 format-check:
-	$(CLANG_FORMAT) --dry-run --Werror main.cpp
+	$(PYTHON) scripts/format-source.py --formatter "$(CLANG_FORMAT)" --check
 
 lint: format-check verify-project
 

@@ -20,6 +20,8 @@ make clean
 
 Install the formatter with `pipx install clang-format==18.1.8`, or `python -m pip install -r requirements-dev.txt` in an activated virtual environment. Python 3 is also required for the project-integrity and startup checks. `CLANG_FORMAT` and `PYTHON` can select other executable paths.
 
+For CLion, open the root Makefile as a project. Formatting runs through `scripts/format-source.py` so the Makefile importer does not mistake `clang-format` for a C++ compiler. After updating an existing project, use **Tools → Makefile → Clean and Reload Makefile Project** to refresh the detected commands. The IDE's compiler should remain GCC or Clang; clang-format is selected separately under **Editor → Code Style → C/C++**.
+
 ## Windows (priority)
 
 Install **Visual Studio 2022**, the **Desktop development with C++** workload, **MSVC v143 x86/x64 tools**, and a **Windows 10 or 11 SDK**. Install GNU Make (`choco install make -y`), Python, and clang-format. Run from PowerShell, Command Prompt, or Git Bash with the tools on `PATH`:
