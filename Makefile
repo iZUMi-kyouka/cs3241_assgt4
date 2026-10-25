@@ -3,7 +3,7 @@
 CONFIG ?= Debug
 PYTHON ?= python3
 CLANG_FORMAT ?= clang-format
-STRICT ?= 0
+STRICT ?= 1
 
 ifeq ($(filter $(CONFIG),Debug Release),)
 $(error CONFIG must be Debug or Release)

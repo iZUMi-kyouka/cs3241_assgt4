@@ -6,7 +6,7 @@ This repository bootstraps the supplied Bezier assignment. The assignment's unim
 
 ## Build and format
 
-Every `make` build runs `clang-format` first: four spaces, Egyptian braces (opening brace on the same line), and spaces around binary operators. `make lint` checks formatting without editing files. CI uses clang-format 18.1.8, pinned in `requirements-dev.txt`.
+Every `make` build runs `clang-format` first: four spaces, Egyptian braces (opening brace on the same line), and spaces around binary operators. Builds reject warnings by default. `make lint` checks formatting without editing files. CI uses clang-format 18.1.8, pinned in `requirements-dev.txt`.
 
 ```sh
 make                         # Format, then build Debug
