@@ -17,6 +17,8 @@ Makefile text eol=lf
 *.vcxproj.filters whitespace=cr-at-eol
 # Keep vendor headers in their original Windows line endings as well.
 visual_studio/include/** -text whitespace=cr-at-eol
+original_vs_project/include/** -text whitespace=cr-at-eol
+original_vs_project/main.cpp -text whitespace=cr-at-eol
 *.dll binary
 *.lib binary
 *.exe binary
