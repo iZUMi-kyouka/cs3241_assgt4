@@ -3,6 +3,7 @@
 #include <cstdlib>
 #include <iostream>
 #include <fstream>
+#include <vector>
 
 #ifdef _WIN32
 #include <Windows.h>
@@ -41,7 +42,7 @@ struct Point {
 
 // Storage of control points
 int nPt = 0;
-Point ptList[MAXPTNO];
+std::vector<Point> ptList(MAXPTNO);
 
 // Display options
 bool isDisplayingControlPoints = true;
@@ -66,6 +67,29 @@ void drawRightArrow() {
     glEnd();
 }
 
+double fac(double n) {
+    return n <= 1 ? 1 : n * fac(n - 1);
+}
+
+double choose(double n, double k) {
+    return fac(n) / (fac(k) * fac(n - k));
+}
+
+double basis(int n, int i, double t) {
+    return choose(n, i) * pow(1 - t, n - i) * pow(t, i);
+}
+
+void drawBezierCurve(int firstPoint, double t) {
+    double rX = 0;
+    double rY = 0;
+    for (int i = 0; i < 4; i++) {
+        double b = basis(3, i, t);
+        rX += b * ptList[firstPoint + i].x;
+        rY += b * ptList[firstPoint + i].y;
+    }
+    glVertex2d(rX, rY);
+}
+
 void display(void) {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glPushMatrix();
@@ -83,6 +107,23 @@ void display(void) {
 
     if (isDisplayingControlLines) {
         setColor(COLOR_CONTROL_LINE);
+        glLineWidth(3);
+        glBegin(GL_LINE_STRIP);
+        for (int i = 0; i < nPt; i++) {
+            glVertex2d(ptList[i].x, ptList[i].y);
+        }
+        glEnd();
+    }
+
+    glColor3f(0, 0, 0);
+    glLineWidth(1);
+    for (int firstPoint = 0; firstPoint + 3 < nPt; firstPoint += 3) {
+        glBegin(GL_LINE_STRIP);
+        for (int segment = 0; segment <= NLINESEGMENT; segment++) {
+            double t = static_cast<double>(segment) / NLINESEGMENT;
+            drawBezierCurve(firstPoint, t);
+        }
+        glEnd();
     }
 
     glPopMatrix();
@@ -171,8 +212,7 @@ void keyboard(unsigned char key, int /*x*/, int /*y*/) {
 
         case 'e':
         case 'E':
-            // Do something to erase all the control points added
-
+            nPt = 0;
             break;
 
         case 'Q':
