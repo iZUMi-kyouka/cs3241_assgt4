@@ -1,4 +1,4 @@
-// CS3241Lab4.cpp : Defines the entry point for the console application.
+// AI assistance was used for design consultation, debugging, and researching implementation details.
 #include <cmath>
 #include <cstdlib>
 #include <iostream>
