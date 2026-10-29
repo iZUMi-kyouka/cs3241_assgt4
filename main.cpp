@@ -24,7 +24,7 @@
 #include <GL/glut.h>
 #endif
 
-#define MAXPTNO 1000
+#define MAXPTNO 10000
 #define NLINESEGMENT 32
 #define NOBJECTONCURVE 8
 
