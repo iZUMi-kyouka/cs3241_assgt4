@@ -36,6 +36,12 @@ jobs:
         run: |
           $platform = if ('${{ matrix.platform }}' -eq 'x86') { 'Win32' } else { 'x64' }
           python scripts/smoke-test.py "build/$platform/${{ matrix.config }}/CS3241 Assignment 4 Bezier.exe"
+      - name: Build and launch the submission in an untouched original project copy
+        if: matrix.platform == 'x64'
+        shell: pwsh
+        run: |
+          ./scripts/build-windows.ps1 -Configuration '${{ matrix.config }}' -Platform x64 -Strict -OriginalProject
+          python scripts/smoke-test.py "build/original-vs/${{ matrix.config }}/CS3241 Assignment 4 Bezier.exe"
       - name: Save executable, matching DLL, and full MSBuild diagnostics
         if: always()
         uses: actions/upload-artifact@v7.0.2

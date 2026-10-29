@@ -15,6 +15,8 @@ The workflow in `../.github/workflows/cross-platform-build.yml` runs on `main`, 
 
 Windows uses the Windows Server 2022 / Visual Studio 2022 image, rebuilding the actual supplied solution with the original v143 settings. It checks the full MSBuild log for warnings and uploads the executable, matching DLL, text log, and binary log. macOS uses explicit `macos-15-intel` (Intel) and `macos-15` (Apple Silicon) runners and verifies their architectures. These labels follow GitHub's [runner reference](https://docs.github.com/en/actions/reference/runners/github-hosted-runners).
 
+The two Windows x64 jobs also copy the untouched `original_vs_project/` into an ignored build directory and replace only its starter `main.cpp` with the submission. The original solution and project bytes are retained. Dependency search paths and DLL copying come from `Directory.Build.targets`; only output/intermediate locations are redirected. Both Debug and Release must rebuild with zero warnings and pass the startup check. The original bundle contains only x64 dependencies; the existing Windows x86 jobs use the matching dependencies in `visual_studio/`.
+
 Each job checks formatting, validates the original project/binaries, builds, and launches the GLUT program for five seconds to catch missing DLLs, missing frameworks, and startup crashes. Linux supplies a virtual display with Xvfb. Startup checks do not verify the drawing tasks.
 
 ## Local pre-push hook

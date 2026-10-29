@@ -27,5 +27,8 @@ for name, expected in ORIGINALS.items():
     actual = hashlib.sha256(content).hexdigest()
     if actual != expected:
         raise SystemExit(f"Original professor-supplied file was changed: {name}")
+    original_name = name.replace("visual_studio/", "original_vs_project/", 1)
+    if hashlib.sha256((ROOT / original_name).read_bytes()).hexdigest() != expected:
+        raise SystemExit(f"Untouched original project was changed: {original_name}")
 
 print("Professor's compiler/linker configuration, solution, and x64 binaries are unchanged.")

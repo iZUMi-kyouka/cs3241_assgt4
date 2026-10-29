@@ -4,7 +4,8 @@ param(
     [string]$Configuration = 'Debug',
     [ValidateSet('x64', 'x86', 'Win32')]
     [string]$Platform = 'x64',
-    [switch]$Strict
+    [switch]$Strict,
+    [switch]$OriginalProject
 )
 
 $ErrorActionPreference = 'Stop'
@@ -22,6 +23,22 @@ if (-not $installation) {
 }
 $msbuild = Join-Path $installation 'MSBuild\Current\Bin\amd64\MSBuild.exe'
 $logDirectory = Join-Path $repoRoot "build\$projectPlatform\$Configuration"
+$solution = Join-Path $repoRoot 'visual_studio/CS3241 Assignment 4 Bezier.sln'
+$outputArguments = @()
+if ($OriginalProject) {
+    if ($projectPlatform -ne 'x64') {
+        throw 'The untouched original project bundles only x64 FreeGLUT dependencies.'
+    }
+    $logDirectory = Join-Path $repoRoot "build\original-vs\$Configuration"
+    $projectCopy = Join-Path $repoRoot "build\original-project-copy\$Configuration"
+    New-Item -ItemType Directory -Path $projectCopy -Force | Out-Null
+    Copy-Item (Join-Path $repoRoot 'original_vs_project\*') $projectCopy -Recurse -Force
+    Copy-Item (Join-Path $repoRoot 'main.cpp') (Join-Path $projectCopy 'main.cpp') -Force
+    # Supply dependency search paths and DLL copying only; retain the original project bytes.
+    Copy-Item (Join-Path $repoRoot 'visual_studio\Directory.Build.targets') $projectCopy -Force
+    $solution = Join-Path $projectCopy 'CS3241 Assignment 4 Bezier.sln'
+    $outputArguments = @("/p:OutDir=$logDirectory\", "/p:IntDir=$logDirectory\obj\")
+}
 New-Item -ItemType Directory -Path $logDirectory -Force | Out-Null
 $logPath = Join-Path $logDirectory 'msbuild.log'
 $binlogPath = Join-Path $logDirectory 'msbuild.binlog'
@@ -30,7 +47,7 @@ Push-Location $repoRoot
 try {
     # Rebuild so a strict check cannot skip diagnostics hidden by incremental builds.
     # No compiler, linker, SDK, language-standard, or toolset overrides are passed.
-    & $msbuild 'visual_studio/CS3241 Assignment 4 Bezier.sln' /nologo /m /t:Rebuild `
+    & $msbuild $solution /nologo /m /t:Rebuild @outputArguments `
         "/p:Configuration=$Configuration" "/p:Platform=$solutionPlatform" `
         /verbosity:normal /fl "/flp:LogFile=$logPath;Verbosity=normal;Encoding=UTF-8" `
         "/bl:$binlogPath"
